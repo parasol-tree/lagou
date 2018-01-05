@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>职位管理</title>
+	<link rel="stylesheet" type="text/css" href="/css/common/bootstrap.min.css">
+	<style>
+		.table>thead>tr>th,.table>tbody>tr>td {
+			text-align:center!important;
+		}
+	</style>
+</head>
+<body>
+	<header class="js-mountPoint_header">
+	</header>
+
+	<div class="js-mountPoint_addPositionBtn container"></div>
+
+	<div class="js-mountPoint_positionManagement" style="margin-bottom: 15px;"></div>
+
+	<div class="js-mountPoint_positionList container table-responsive"></div>
+
+	<div class="container">
+		<nav aria-label="Page navigation">
+	  	<ul class="pagination js-mountPoint_pagination">
+	  	</ul>
+		</nav>
+	</div>
+	
+
+</body>
+</html>
+<script src="/js/common/jquery.js"></script>
+<script src="/js/common/bootstrap.min.js"></script>
+
+<script src="/js/pages/common/header/logout.js"></script>
+<script src="/js/pages/common/header/login.js"></script>
+<script src="/js/pages/common/header/register.js"></script>
+<script src="/js/pages/common/header/header.js"></script>
+
+<script src="/js/pages/list/pagination.js"></script>
+<script src="/js/pages/list/modifyPositionDom.js"></script>
+<script src="/js/pages/list/positionList.js"></script>
+<script src="/js/pages/list/positionManagement.js"></script>
+<script src="/js/pages/list/index.js"></script>
+
+<script>
+	var page = new Page();
+	page.init()
+</script>
