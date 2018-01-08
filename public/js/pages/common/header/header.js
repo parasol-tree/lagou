@@ -23,6 +23,9 @@ Header.tempLate = `
 	        <li>
 	        	<a href="/list.html">职位管理</a>
 	        </li>
+	        <li>
+	        	<a href="/candidate.html">候选人管理</a>
+	        </li>
 	      </ul>
 	      <ul class="nav navbar-nav navbar-right registerLoginBtnContainer">
 	      </ul>
@@ -60,7 +63,7 @@ $.extend(Header.prototype, {
 
 	handleGetLoginInfoSuccess: function(res) {
 		if (res && res.data && res.data.whetherLogin) {
-			this.createLogout();
+			this.createLogout(res.data.username);
 		} else {
 			this.createRegister();
 			this.createLogin();
@@ -75,7 +78,8 @@ $.extend(Header.prototype, {
 		this.login = new Login(this.elem, this.registerLoginBtnContainer);
 	},
 
-	createLogout: function() {
-		this.logout = new Logout(this.registerLoginBtnContainer);
+	createLogout: function(username) {
+		// console.log(username)
+		this.logout = new Logout(this.registerLoginBtnContainer, username);
 	}
 })

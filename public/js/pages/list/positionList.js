@@ -2,6 +2,7 @@ function PositionList(positionListContainer) {
 	this.positionList = positionListContainer;
   this.whichPage = 1;
   this.eachPageDataCount = 3;
+  this.admin ="";
 	this.init();
 }
 
@@ -13,6 +14,7 @@ PositionList.tempLate = `
         <th>#</th>
         <th>职位名称</th>
         <th>公司</th>
+        <th>公司Logo</th>
         <th>薪资范围</th>
         <th>工作地点</th>
         <th>操作</th>
@@ -22,20 +24,47 @@ PositionList.tempLate = `
     <tfoot></tfoot>
   </table>
 `;
-
+PositionList.warningTempLate = `
+  <div class="alert alert-danger hide js-warningUser" role="alert">
+    需要
+    <span class="h2 js-warningUserH2">登录</span>
+    才能进行后续的操作
+  </div>
+`;
 $.extend(PositionList.prototype, {
 	init: function() {
-		this.createDom();
-    this.createModifyPosition();
-    this.bindEvents();
-    this.getPositionData();
-    // console.log(this.whichPage,this.eachPageDataCount)
+    this.createDom();
+    this.listPageGetLoginInfo();
   },
 
   createDom: function() {
     this.positionListElem = $(PositionList.tempLate);
     this.positionList.append(this.positionListElem);
+    this.warningTempLate = $(PositionList.warningTempLate);
+    this.positionList.append(this.warningTempLate);
     this.positionListInfoContainer = this.positionListElem.find(".js-positionListInfoContainer");
+    this.waring = this.warningTempLate.find(".js-waring");
+    this.waringInfo = this.warningTempLate.find(".js-warningUserH2");
+    
+  },
+
+  listPageGetLoginInfo: function() {
+    $.ajax({
+      url: "api/whetherLogin",
+      success: $.proxy(this.handleListPageGetLoginInfoSuccess, this)
+    })
+  },
+
+  handleListPageGetLoginInfoSuccess: function(res) {
+    if (res && res.data && res.data.whetherLogin) {
+      this.warningTempLate.addClass("hide");
+      this.createModifyPosition();
+      this.admin =res.data.admin;
+      this.bindEvents();
+      this.getPositionData();
+    }else{
+      this.warningTempLate.removeClass("hide");
+    }
   },
 
   createModifyPosition: function() {
@@ -44,19 +73,34 @@ $.extend(PositionList.prototype, {
   },
 
   bindEvents: function() {
+    this.onLineUser = $(".js-onLineUsername").html();
     this.positionListInfoContainer.on("click", $.proxy(this.handlePositionDeleteBtnClick, this));
   },
 
   handlePositionDeleteBtnClick: function(e) {
     this.target = $(e.target);
+    this.deletingCondition = (this.onLineUser === this.admin)
+    this.deleteTagName = (this.target)[0].tagName === "SPAN";
+
     this.isTargetDelete = this.target.hasClass("js-delete");
     this.isTargetModify = this.target.hasClass("js-modify");
-    if (this.isTargetDelete) {
+
+    if (!this.deletingCondition && this.deleteTagName) {
+      this.waringInfo.text("管理员权限");
+      this.warningTempLate.removeClass("hide");
+      setTimeout($.proxy(this.handleHideWaringInfo, this), 1500)
+    } else if (this.isTargetDelete && this.deletingCondition) {
       this.handleDeletePosition(this.target.attr("data-id"));
     }
     if (this.isTargetModify) {
       this.modifyPosition.modifyPositionInfo(this.target.attr("data-id"));
+      //解除点击修改时警告窗弹出的问题
+      this.warningTempLate.addClass("hide");
     }
+  },
+
+  handleHideWaringInfo: function() {
+    this.warningTempLate.addClass("hide");
   },
 
   handleDeletePosition: function(id) {
@@ -116,16 +160,18 @@ $.extend(PositionList.prototype, {
 
     for (this.i; this.i < this.positionContentLength; this.i++) {
       this.positionItem = this.positionContent[this.i];
+      this.imgSrc = this.positionItem.filename ?  this.positionItem.filename : 'default.jfif';
       // console.log(this.positionItem);
       this.positionContentStr += `
                                   <tr>
                                     <td>${this.i + 1}</td>
-                                    <td>${this.positionItem.position}</td>
-                                    <td>${this.positionItem.companyName}</td>
+                                    <td>${this.positionItem.name}</td>
+                                    <td>${this.positionItem.company}</td>
+                                    <td><img src="/uploads/${this.imgSrc}" alt="" width=30 height=30 /></td>
                                     <td>${this.positionItem.salary}</td>
-                                    <td>${this.positionItem.workAddress}</td>
+                                    <td>${this.positionItem.address}</td>
                                     <td>
-                                      <a href="javascript:;" class="js-delete" data-id="${this.positionItem._id}">删除</a>
+                                      <span href="javascript:;" class="js-delete" data-id="${this.positionItem._id}">删除</span>
                                       <a href="javascript:;" class="js-modify" data-id="${this.positionItem._id}">修改</a>
                                     </td>
                                   </tr>

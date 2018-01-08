@@ -85,28 +85,35 @@ $.extend(PositionManagement.prototype, {
 	},
 
 	handleAddPositionBtnClick: function() {
-		var position = this.positionManagement.find(".js-positionName").val(),
-				companyName = this.positionManagement.find(".js-companyName").val(),
-				salary = this.positionManagement.find(".js-salary").val(),
-				workAddress = this.positionManagement.find(".js-workAddress").val();
-		console.log(position,companyName,salary,workAddress)
+		var position = this.positionManagement.find(".js-positionName"),
+				companyName = this.positionManagement.find(".js-companyName"),
+				salary = this.positionManagement.find(".js-salary"),
+				workAddress = this.positionManagement.find(".js-workAddress"),
+				logo = this.positionManagement.find(".js-companyLogo");
+
+		// 创建一个表单数据的对象
+		var formData = new FormData();
+
+		formData.append("name", position.val());
+		formData.append("company", companyName.val());
+		formData.append("salary", salary.val());
+		formData.append("address", workAddress.val());
+		formData.append("logo", logo[0].files[0]);
+		// console.log(position.val(),companyName.val(),salary.val(),workAddress.val(),logo[0].files[0])
 		$.ajax({
-			url: 'api/addPosition',
-			type: 'post',
-			data: {
-				position: position,
-				companyName: companyName,
-				salary: salary,
-				workAddress: workAddress
-			},
+			url: "/api/addPosition",
+			type: "post",
+			cache: false,
+			processData: false,
+    		contentType: false,
+			data: formData,
 			success: $.proxy(this.handleAddPositionSuccess, this),
 			error: $.proxy(this.handleAddPositionDefeat, this)
 		})
-		alert("sadasd")
 	},
 
 	handleAddPositionSuccess: function(res) {
-		// console.log(res);
+		console.log(res);
 		// alert(123)
 		if (res && res.data && res.data.addOnePosition) {
 			// alert(456)

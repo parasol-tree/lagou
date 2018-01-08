@@ -52,10 +52,13 @@ module.exports = {
   },
 
   whetherLogin: (req, res) => {
+    // console.log(req.session.username)
     res.json({
       "ret": true,
       "data": {
-        whetherLogin: req.session.username ? true : false
+        whetherLogin: req.session.username ? true : false,
+        username: req.session.username,
+        admin: 'administered'
       }
     });
   },

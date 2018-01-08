@@ -2,10 +2,10 @@ const positionModel = require("../models/positionModels.js");
 
 module.exports = {
 	addPosition(req, res) {
-		const {position, companyName, salary, workAddress} = req.body;
-		console.log(req.body);
-		positionModel.addOnePosition(position, companyName, salary, workAddress, (err) => {
-			// console.log(!err);
+		const {name, company, salary, address} = req.body;
+		const filename = req.file ? req.file.filename : ""
+
+		positionModel.addOnePosition(name, company, salary, address, filename, (err) => {
 			/*if (!err) {
 				console.log("添加职位信息成功")
 			}*/
@@ -59,12 +59,16 @@ module.exports = {
 	},
 
 	modifyPosition(req, res) {
-		const {position, companyName, salary, workAddress, id} = req.body;
+		const {name, company, salary, address, id} = req.body;
+		const filename = req.file ? req.file.filename : ""
+		// console.log(req.body)
+		console.log(id);
 		positionModel.modifyOnePositionById(id,{
-			position,
-			companyName,
+			name,
+			company,
 			salary,
-			workAddress
+			address,
+			filename
 		}, (result) => {
 			res.json({
 				'ret': true,
@@ -75,3 +79,37 @@ module.exports = {
 		});
 	}
 }
+//                      d*##$.
+// zP"""""$e.           $"    $o
+//4$       '$          $"      $
+//'$        '$        J$       $F
+// 'b        $k       $>       $
+//  $k        $r     J$       d$
+//  '$         $     $"       $~
+//   '$        "$   '$E       $
+//    $         $L   $"      $F ...
+//     $.       4B   $      $$$*"""*b
+//     '$        $.  $$     $$      $F
+//      "$       R$  $F     $"      $
+//       $k      ?$ u*     dF      .$
+//       ^$.      $$"     z$      u$$$$e
+//        #$b             $E.dW@e$"    ?$
+//         #$           .o$$# d$$$$c    ?F
+//          $      .d$$#" . zo$>   #$r .uF
+//          $L .u$*"      $&$$$k   .$$d$$F
+//           $$"            ""^"$$$P"$P9$
+//          JP              .o$$$$u:$P $$
+//          $          ..ue$"      ""  $"
+//         d$          $F              $
+//         $$     ....udE             4B
+//          #$    """"` $r            @$
+//           ^$L        '$            $F
+//             RN        4N           $
+//              *$b                  d$
+//               $$k                 $F
+//               $$b                $F
+//                 $""               $F
+//                 '$                $
+//                  $L               $
+//                  '$               $
+//                   $               $

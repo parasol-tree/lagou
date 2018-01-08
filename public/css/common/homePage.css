@@ -3,3 +3,6 @@
 	background-size: cover;
 	color: #fff;
 }
+.js-mountPoint_positionList .js-warning .h2{
+	color:red;
+}

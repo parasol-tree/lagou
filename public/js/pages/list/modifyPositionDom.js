@@ -69,12 +69,13 @@ $.extend(ModifyPositionDom.prototype, {
     this.companyName = this.modifyPositionDom.find(".js-companyName");
     this.salary = this.modifyPositionDom.find(".js-salary");
     this.workAddress = this.modifyPositionDom.find(".js-workAddress");
+    this.companyLogo = this.modifyPositionDom.find(".js-companyLogo");
 
     this.successNotice = this.modifyPositionDom.find(".js-successNotice");
     this.errorNotice = this.modifyPositionDom.find(".js-errorNotice");
   },
 
-//由ModifyPositionTemplate.js调用下面的modifyPositionInfo()方法,进行修改职位信息
+//由positionList.js第65行调用下面的modifyPositionInfo()方法,进行修改职位信息
   modifyPositionInfo: function(id) {
     this.modifyPositionDom.modal("show");
     this.findAndModifyOnePositionData(id);
@@ -92,13 +93,14 @@ $.extend(ModifyPositionDom.prototype, {
 
   handleGetOnePositionInfo: function(res) {
     if (res && res.data && res.data.modify) {
+      // alert(0)
       this.modify = res.data.modify;
-
-      this.positionName.val(this.modify.position);
-      this.companyName.val(this.modify.companyName);
+      this.positionName.val(this.modify.name);
+      this.companyName.val(this.modify.company);
       this.salary.val(this.modify.salary);
-      this.workAddress.val(this.modify.workAddress);
+      this.workAddress.val(this.modify.address);
       this.id = this.modify._id;
+// console.log(this.modify)
     }
   },
 
@@ -108,28 +110,29 @@ $.extend(ModifyPositionDom.prototype, {
   },
 
   handleModifyPositionBtnClick: function() {
-    this.positionNameValue = this.positionName.val();
-    this.companyNameValue = this.companyName.val();
-    this.salaryValue = this.salary.val();
-    this.workAddressValue = this.workAddress.val();
+    // 创建一个表单数据的对象
+    var formData = new FormData();
 
+    formData.append("name", this.positionName.val());
+    formData.append("company", this.companyName.val());
+    formData.append("salary", this.salary.val());
+    formData.append("address", this.workAddress.val());
+    formData.append("logo", this.companyLogo[0].files[0]);
+    formData.append("id", this.id);
+    // console.log(this.id)
     $.ajax({
       url: "api/modifyPosition",
       type: "post",
-      data: {
-        position: this.positionNameValue,
-        companyName: this.companyNameValue,
-        salary: this.salaryValue,
-        workAddress: this.workAddressValue,
-        id: this.id
-      },
+      cache: false,
+      processData: false,
+      contentType: false,
+      data: formData,
       success: $.proxy(this.handleModifyPositionSuccess, this),
       error: $.proxy(this.handleModifyPositionDefeat, this),
-    });
+    })
   },
 
   handleModifyPositionSuccess: function(res) {
-    console.log(res);
     if (res && res.data && res.data.modify) {
       this.successNotice.removeClass("hide");
       setTimeout($.proxy(this.handleHideMadalAndSuccessNotice, this), 2000);

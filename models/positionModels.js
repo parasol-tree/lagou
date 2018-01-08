@@ -1,16 +1,17 @@
 const mongoose = require('../utils/database.js');
 
 var Position = mongoose.model('position', {
-	position: String,
-	companyName: String,
+	name: String,
+	company: String,
 	salary: String,
-	workAddress: String
+	address: String,
+	filename: String
 });
 
 module.exports = {
-	addOnePosition(position, companyName, salary, workAddress, callback) {
-		var position = new Position({position, companyName, salary, workAddress});
-
+	addOnePosition(name, company, salary, address, filename, callback) {
+		var position = new Position({name, company, salary, address, filename});
+		// console.log(name, company, salary, address,filename)
 		position.save((err) => {
 			callback(err)
 		})
@@ -48,6 +49,7 @@ module.exports = {
 	},
 
 	modifyOnePositionById(id,paramsObject,callback) {
+		// console.log(paramsObject);
 		Position.findByIdAndUpdate(id, paramsObject).then((result) => {
 			callback(result);
 		}).catch(() => {
