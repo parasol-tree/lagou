@@ -36,6 +36,7 @@ $.extend(CandidateList.prototype, {
 	init: function() {
 		this.createDom();
     this.getUserLoginInfo();
+    // this.getAllPositionInfo();
 	},
 
 	createDom: function() {

@@ -31,6 +31,25 @@ PositionList.warningTempLate = `
     才能进行后续的操作
   </div>
 `;
+PositionList.filterTempLate =`
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+    <table class="table panel panel-default table-hover modal-content" cellspacing="0" cellpadding="0">
+      <caption class="panel-heading">符合该薪资范围的的候选人</caption>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>姓名</th>
+          <th>意向职位</th>
+          <th>性别</th>
+        </tr>
+      </thead>
+      <tbody class="js-filterContainer"></tbody>
+      <tfoot></tfoot>
+    </table>
+</div>
+`;
 $.extend(PositionList.prototype, {
 	init: function() {
     this.createDom();
@@ -45,6 +64,10 @@ $.extend(PositionList.prototype, {
     this.positionListInfoContainer = this.positionListElem.find(".js-positionListInfoContainer");
     this.waring = this.warningTempLate.find(".js-waring");
     this.waringInfo = this.warningTempLate.find(".js-warningUserH2");
+
+    this.filterElem = $(PositionList.filterTempLate);
+    this.positionList.append(this.filterElem)
+    this.filterConContainer = this.filterElem.find(".js-filterContainer");
     
   },
 
@@ -81,9 +104,13 @@ $.extend(PositionList.prototype, {
     this.target = $(e.target);
     this.deletingCondition = (this.onLineUser === this.admin)
     this.deleteTagName = (this.target)[0].tagName === "SPAN";
+    this.filterCandidateTagName = (this.target)[0].tagName === "EM";
+    // console.log(this.filterCandidateTagName);
 
     this.isTargetDelete = this.target.hasClass("js-delete");
     this.isTargetModify = this.target.hasClass("js-modify");
+    this.isTargetFilterCandidate = this.target.hasClass("js-filterCandidate");
+    // console.log(this.isTargetFilterCandidate)
 
     if (!this.deletingCondition && this.deleteTagName) {
       this.waringInfo.text("管理员权限");
@@ -96,6 +123,12 @@ $.extend(PositionList.prototype, {
       this.modifyPosition.modifyPositionInfo(this.target.attr("data-id"));
       //解除点击修改时警告窗弹出的问题
       this.warningTempLate.addClass("hide");
+    }
+    if (this.filterCandidateTagName && this.isTargetFilterCandidate) {
+      const salary = this.target.text()
+      // console.log(salary);
+      this.getAllPositionInfo(salary);
+      // console.log(this.filterBtn)
     }
   },
 
@@ -168,7 +201,9 @@ $.extend(PositionList.prototype, {
                                     <td>${this.positionItem.name}</td>
                                     <td>${this.positionItem.company}</td>
                                     <td><img src="/uploads/${this.imgSrc}" alt="" width=30 height=30 /></td>
-                                    <td>${this.positionItem.salary}</td>
+                                    <td>
+                                      <em class="js-filterCandidate" title="点击查看符合薪资范围候选人">${this.positionItem.salary}</em>
+                                    </td>
                                     <td>${this.positionItem.address}</td>
                                     <td>
                                       <span href="javascript:;" class="js-delete" data-id="${this.positionItem._id}">删除</span>
@@ -196,5 +231,37 @@ $.extend(PositionList.prototype, {
     this.whichPage = whichPageShow;
     this.li = showli;
     this.getPositionData();
+  },
+
+  getAllPositionInfo: function(salary) {
+    $.ajax({
+      url: '/api/getAllCandidateInfo',
+      data: {
+        salary: salary
+      },
+      success: $.proxy(this.handleGetAllCadidateInfoSuccess, this)
+    })
+  },
+
+  handleGetAllCadidateInfoSuccess: function(res) {
+    const list = res.data.list;
+    if (res && res.data && list) {
+      console.log(list)
+      $('[data-toggle="popover"]').popover();
+      this.titleElem = this.positionListElem.find(".popover");
+      var str = "";
+      this.filterElem.modal("show");
+      for (var i = 0; i< list.length; i++) {
+        str += `
+                <tr>
+                  <td>${i + 1}</td>
+                  <td>${list[i].name}</td>
+                  <td>${list[i].position}</td>
+                  <td>${list[i].sex}</td>
+                </tr>
+                `;
+      }
+      this.filterConContainer.html(str);
+    }
   }
 })

@@ -5,6 +5,10 @@ const userController = require('../controller/user.js');
 const positionController = require("../controller/position.js");
 const candidateController = require("../controller/candidate.js");
 
+// import { userController, positionController, candidateController } from '../controller/';
+
+// const { userController, positionController, candidateController } = require({../controller/})
+
 const upload = require('../utils/uploads.js')
 
 router.post('/register', userController.register);
@@ -23,5 +27,6 @@ router.get('/getCandidatesList', candidateController.getCandidatesList);
 router.get('/deleteCandidate', candidateController.deleteCandidate);
 router.get('/getOneCandidateInfo', candidateController.getOneCandidateInfo);
 router.post('/modifyCandidateInfo', candidateController.modifyCandidateInfo);
+router.get('/getAllCandidateInfo', candidateController.getAllCandidateInfo);
 
 module.exports = router;

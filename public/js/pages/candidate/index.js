@@ -27,8 +27,14 @@ $.extend(Page.prototype, {
 	createCandidateList: function() {
 		this.candidateListContainer = $(".js-mountPoint_candidateList");
 		this.candidateList = new CandidateList(this.candidateListContainer);
-		$(this.candidateList).on("triggerTotalPage", $.proxy(this.handleTriggerTotalPage, this))
+		$(this.candidateList).on("triggerTotalPage", $.proxy(this.handleTriggerTotalPage, this));
+		// $(this.candidateList).on("triggerAllPositionList", $.proxy(this.handleTriggerAllPositionList))
 	},
+
+	// handleTriggerAllPositionList: function(e) {
+	// 	// console.log(e.list)
+	// 	this.positionList.setFilter();
+	// },
 
 	createPagination: function() {
 		this.paginationContainer = $(".js-mountPoint_pagination");

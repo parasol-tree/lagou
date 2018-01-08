@@ -62,7 +62,7 @@ module.exports = {
 		const {name, company, salary, address, id} = req.body;
 		const filename = req.file ? req.file.filename : ""
 		// console.log(req.body)
-		console.log(id);
+		// console.log(id);
 		positionModel.modifyOnePositionById(id,{
 			name,
 			company,
@@ -77,7 +77,22 @@ module.exports = {
 				}
 			})
 		});
-	}
+	}/*,
+
+	getAllCandidateInfo(req, res) {
+		const salary = req.query.salary;
+		// console.log(salary)
+		positionModel.findSalary(salary, (result) =>{
+			// console.log(result !== 'error');
+			res.json({
+				'ret': true,
+				'data': {
+					'result': (result && result !== 'error') ? true : false,
+					'list': result
+				}
+			})
+		});
+	}*/
 }
 //                      d*##$.
 // zP"""""$e.           $"    $o

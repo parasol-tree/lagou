@@ -76,5 +76,20 @@ module.exports = {
 				}
 			})
 		});
+	},
+
+	getAllCandidateInfo(req, res) {
+		const salary = req.query.salary;
+		// console.log(salary)
+		candidateModel.findSalary(salary, (result) =>{
+			// console.log(result !== 'error');
+			res.json({
+				'ret': true,
+				'data': {
+					'result': (result && result !== 'error') ? true : false,
+					'list': result
+				}
+			})
+		});
 	}
 }

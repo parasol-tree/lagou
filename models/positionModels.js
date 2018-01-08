@@ -55,5 +55,14 @@ module.exports = {
 		}).catch(() => {
 			callback('error');
 		})
-	}
+	}/*,
+
+	findSalary(salary, callback) {
+		// console.log(salary)
+		Position.find({salary:salary}).then((result) => {
+			callback(result);
+		}).catch(() => {
+			callback('error');
+		})
+	}*/
 }
